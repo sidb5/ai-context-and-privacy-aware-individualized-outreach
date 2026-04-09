@@ -1,6 +1,6 @@
 # AI Context- and Privacy-Aware Individualized Outreach
 
-This repository contains a working prototype of the patent concept in this workspace.
+This repository contains a working prototype of the patent I have invented.
 
 It is not a generic campaign microsite. It is a demo implementation of a system that:
 
@@ -25,12 +25,7 @@ The current prototype is framed as a political fundraising and citizen-engagemen
 
 ## Patent Source In This Workspace
 
-The prototype is based on the patent material located in the parent workspace:
-
-- [`Interactive_Brochure_Improvement_Patent_Draft_v2.docx`](../Interactive_Brochure_Improvement_Patent_Draft_v2.docx)
-- [`Prior-Art Search and Non‑Provisional Draft .docx`](../Prior-Art%20Search%20and%20Non%E2%80%91Provisional%20Draft%20.docx)
-- [`common_sense_summary.docx`](../common_sense_summary.docx)
-- [`figure_sheets_v2/`](../figure_sheets_v2/)
+The prototype is based on the patent i invented.
 
 This app is intended to make the patent easier to demo to non-technical stakeholders by turning the filing into a live, end-to-end experience.
 
