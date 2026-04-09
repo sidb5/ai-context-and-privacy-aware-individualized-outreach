@@ -57,8 +57,8 @@ function Card({
     <section
       className={
         dark
-          ? "rounded-[2rem] bg-stone-950 p-8 text-stone-100 shadow-[0_24px_80px_rgba(34,23,12,0.28)]"
-          : "rounded-[2rem] border border-stone-900/10 bg-white/85 p-8 shadow-[0_24px_80px_rgba(74,52,29,0.14)] backdrop-blur"
+          ? "rounded-[2rem] bg-stone-950 p-5 text-stone-100 shadow-[0_24px_80px_rgba(34,23,12,0.28)] sm:p-8"
+          : "rounded-[2rem] border border-stone-900/10 bg-white/85 p-5 shadow-[0_24px_80px_rgba(74,52,29,0.14)] backdrop-blur sm:p-8"
       }
     >
       <p
@@ -143,10 +143,10 @@ export default async function Home({
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,#fff4cf_0%,#f8ede0_34%,#efe4d1_60%,#dcc7ab_100%)] text-stone-950">
-      <section className="mx-auto w-full max-w-7xl px-6 py-8 sm:px-10 lg:px-12">
+      <section className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-8 sm:py-6 lg:px-12 lg:py-8">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0">
-            <h1 className="max-w-4xl font-serif text-2xl leading-tight sm:text-3xl">
+            <h1 className="max-w-4xl font-serif text-xl leading-tight sm:text-3xl">
               {initialized.asset.display_name}
             </h1>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-stone-700">
@@ -163,7 +163,7 @@ export default async function Home({
         </div>
 
         {view === "simple" ? (
-          <div className="mt-5 grid gap-5 xl:grid-cols-[260px_1fr]">
+          <div className="mt-4 grid gap-4 xl:grid-cols-[260px_1fr] xl:gap-5">
             <aside className="space-y-4">
               <Card title="Demo Paths">
                 <div className="space-y-3">
@@ -173,7 +173,7 @@ export default async function Home({
                       <Link
                         key={href}
                         href={`${href}&view=simple`}
-                        className={`block rounded-2xl px-4 py-4 text-sm font-semibold transition ${buttonClass} ${
+                        className={`block rounded-2xl px-4 py-3 text-sm font-semibold transition sm:py-4 ${buttonClass} ${
                           active ? `ring-4 ${ringClass}` : "opacity-80 hover:opacity-100"
                         }`}
                       >
@@ -240,7 +240,7 @@ export default async function Home({
               </Card>
 
               <Card title="What to try next">
-                <div className="grid gap-5 lg:grid-cols-3">
+                <div className="grid gap-4 lg:grid-cols-3 lg:gap-5">
                   <div className={`rounded-3xl p-4 ${currentPath[4]}`}>
                     <p className="text-xs uppercase tracking-[0.25em] text-stone-500">
                       1. Ask a grounded question

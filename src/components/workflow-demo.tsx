@@ -216,17 +216,17 @@ export function WorkflowDemo(props: WorkflowDemoProps) {
             live backend trace
           </p>
         </div>
-        <div className="h-[126px] overflow-y-auto font-mono text-[11px] leading-5">
+        <div className="h-[126px] overflow-y-auto font-mono text-[10px] leading-5 sm:text-[11px]">
           {trafficLines.slice(0, stepIndex + 2).map(([line, explanation], index) => (
             <div
               key={`${index}-${line}`}
-              className="flex items-start gap-2 whitespace-nowrap text-stone-100"
+              className="flex items-start gap-2 overflow-hidden text-stone-100"
             >
               <span className="shrink-0 text-stone-500">
                 [{String(index + 1).padStart(2, "0")}]
               </span>
-              <span className="truncate">{line}</span>
-              <span className="truncate text-cyan-400">
+              <span className="min-w-0 truncate">{line}</span>
+              <span className="min-w-0 truncate text-cyan-400">
                 ({explanation})
               </span>
             </div>
@@ -235,8 +235,8 @@ export function WorkflowDemo(props: WorkflowDemoProps) {
       </div>
 
       <div className="grid items-stretch gap-5 xl:grid-cols-[1fr_1fr]">
-        <div className="rounded-[1.6rem] border border-stone-900/10 bg-white/90 p-5 shadow-[0_20px_60px_rgba(74,52,29,0.12)]">
-          <div className="flex items-center justify-between gap-4">
+        <div className="rounded-[1.6rem] border border-stone-900/10 bg-white/90 p-4 shadow-[0_20px_60px_rgba(74,52,29,0.12)] sm:p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
             <div>
               <p className="text-sm uppercase tracking-[0.3em] text-amber-700">
                 Supporter View
@@ -246,7 +246,7 @@ export function WorkflowDemo(props: WorkflowDemoProps) {
                 selected demo path.
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 self-start sm:self-auto">
               <button
                 type="button"
                 onClick={() =>
@@ -340,7 +340,7 @@ export function WorkflowDemo(props: WorkflowDemoProps) {
                     <p className="text-[10px] uppercase tracking-[0.22em] text-stone-500">
                       Campaign flyer
                     </p>
-                    <p className="mt-2 text-xl font-semibold text-stone-950">
+                    <p className="mt-2 text-lg font-semibold text-stone-950 sm:text-xl">
                       Scan to see where {props.campaignName.split(" ")[0]} stands
                     </p>
                     <p className="mt-2 text-sm leading-6 text-stone-700">
@@ -409,14 +409,16 @@ export function WorkflowDemo(props: WorkflowDemoProps) {
                         <p className="text-[10px] uppercase tracking-[0.2em] text-stone-500">
                           {props.pathLabel}
                         </p>
-                        <p className="mt-2 text-2xl font-semibold text-stone-950">
+                        <p className="mt-2 text-xl font-semibold text-stone-950 sm:text-2xl">
                           {currentBlocks[0].title}
                         </p>
                         <p className="mt-3 text-sm leading-7 text-stone-700">
                           {currentBlocks[0].body}
                         </p>
-                        <div className="mt-4 inline-flex rounded-full border border-stone-900/10 bg-white/80 px-3 py-1 text-[11px] font-medium text-stone-700">
-                          Tailored for {props.issueFocus} • {props.geography} • {props.timingMode}
+                        <div className="mt-4 inline-flex max-w-full rounded-full border border-stone-900/10 bg-white/80 px-3 py-1 text-[11px] font-medium text-stone-700">
+                          <span className="truncate">
+                            Tailored for {props.issueFocus} / {props.geography} / {props.timingMode}
+                          </span>
                         </div>
                       </div>
                     ) : null}
@@ -471,7 +473,7 @@ export function WorkflowDemo(props: WorkflowDemoProps) {
           </div>
         </div>
 
-        <div className="rounded-[1.6rem] bg-stone-950 p-5 text-stone-100 shadow-[0_20px_60px_rgba(34,23,12,0.24)]">
+        <div className="rounded-[1.6rem] bg-stone-950 p-4 text-stone-100 shadow-[0_20px_60px_rgba(34,23,12,0.24)] sm:p-5">
           <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">
             Server Processing
           </p>
@@ -480,7 +482,7 @@ export function WorkflowDemo(props: WorkflowDemoProps) {
             experience. Click a step or use Next/Back to move through the flow.
           </p>
 
-          <div className="mt-4 max-h-[480px] space-y-2 overflow-y-auto pr-2">
+          <div className="mt-4 max-h-[420px] space-y-2 overflow-y-auto pr-1 sm:max-h-[480px] sm:pr-2">
             <ProcessStep
               active={step === "trigger"}
               onClick={() => setStep("trigger")}
