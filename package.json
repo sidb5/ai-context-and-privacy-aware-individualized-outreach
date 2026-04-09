@@ -6,9 +6,18 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint src --max-warnings=0",
+    "verify:supabase": "tsx --env-file .env.local scripts/verify-supabase.ts",
+    "verify:task4": "tsx --env-file .env.local scripts/verify-task4.ts",
+    "verify:task5": "tsx --env-file .env.local scripts/verify-task5.ts",
+    "verify:task6": "tsx --env-file .env.local scripts/verify-task6.ts",
+    "verify:task7": "tsx --env-file .env.local scripts/verify-task7.ts",
+    "verify:task8": "tsx --env-file .env.local scripts/verify-task8.ts",
+    "verify:task9": "tsx --env-file .env.local scripts/verify-task9.ts",
+    "refresh:copy": "tsx --env-file .env.local scripts/refresh-demo-copy.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.102.1",
     "next": "16.2.3",
     "react": "19.2.4",
     "react-dom": "19.2.4"
@@ -21,6 +30,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.3",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }
