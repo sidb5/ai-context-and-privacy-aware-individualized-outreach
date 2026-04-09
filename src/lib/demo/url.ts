@@ -7,6 +7,8 @@ export function buildSessionUrl(params: {
   geo?: string;
   timing?: string;
   tier?: string;
+  smsMode?: string;
+  smsNotice?: string;
 }) {
   const searchParams = new URLSearchParams({
     asset: params.asset,
@@ -29,6 +31,14 @@ export function buildSessionUrl(params: {
 
   if (params.tier) {
     searchParams.set("tier", params.tier);
+  }
+
+  if (params.smsMode) {
+    searchParams.set("smsMode", params.smsMode);
+  }
+
+  if (params.smsNotice) {
+    searchParams.set("smsNotice", params.smsNotice);
   }
 
   return `/?${searchParams.toString()}`;

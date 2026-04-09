@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 
+import { normalizeSmsTransportMode } from "@/lib/demo/sms-mode";
 import { recordVerifiedIntent } from "@/lib/demo/privacy";
 import { buildSessionUrl } from "@/lib/demo/url";
 
@@ -21,6 +22,7 @@ export async function submitVerifiedIntent(formData: FormData) {
   const geo = String(formData.get("geo") ?? "");
   const timing = String(formData.get("timing") ?? "");
   const tier = String(formData.get("tier") ?? "");
+  const smsMode = normalizeSmsTransportMode(String(formData.get("smsMode") ?? ""));
   const intentType = String(formData.get("intentType") ?? "") as IntentType;
 
   if (!sessionToken || !asset || !source || !channel || !intentType) {
@@ -39,6 +41,7 @@ export async function submitVerifiedIntent(formData: FormData) {
       geo: geo || undefined,
       timing: timing || undefined,
       tier: tier || undefined,
+      smsMode,
     }),
   );
 }

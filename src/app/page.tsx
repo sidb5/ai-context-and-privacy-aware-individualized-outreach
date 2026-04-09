@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { submitSimulatedSms } from "@/app/actions/messaging";
+import { submitSmsMessage } from "@/app/actions/messaging";
 import { submitVerifiedIntent } from "@/app/actions/privacy";
 import { WorkflowDemo } from "@/components/workflow-demo";
 import { assembleBrochure } from "@/lib/demo/brochure";
 import { getSmsThread } from "@/lib/demo/messaging";
+import { normalizeSmsTransportMode } from "@/lib/demo/sms-mode";
 import { getPrivacyState } from "@/lib/demo/privacy";
 import { answerSessionQuestion } from "@/lib/demo/qa";
 import { buildSessionUrl } from "@/lib/demo/url";
 import { getSessionHistory, initializeDemoSession } from "@/lib/demo/session";
+import { hasTwilioEnv } from "@/lib/env";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 type TriggerChannel = "web" | "sms" | "qr" | "link" | "agent_dashboard";
@@ -89,6 +91,9 @@ export default async function Home({
   const tier = one(params.tier, "");
   const q = one(params.q, "");
   const view = one(params.view, "simple");
+  const smsMode = normalizeSmsTransportMode(one(params.smsMode, "simulated"));
+  const smsNotice = one(params.smsNotice, "");
+  const twilioConfigured = hasTwilioEnv();
 
   if (!st) {
     const created = await initializeDemoSession({
@@ -110,6 +115,7 @@ export default async function Home({
         geo: geo || undefined,
         timing: timing || undefined,
         tier: tier || undefined,
+        smsMode,
       }),
     );
   }
@@ -139,6 +145,7 @@ export default async function Home({
     geo: geo || undefined,
     timing: timing || undefined,
     tier: tier || undefined,
+    smsMode,
   });
 
   return (
@@ -161,6 +168,46 @@ export default async function Home({
             <Link href="/agent" className="rounded-full border border-stone-900/10 bg-white/80 px-4 py-2 text-sm text-stone-800">Agent dashboard</Link>
           </div>
         </div>
+
+        <div className="mt-4 flex flex-col gap-3 rounded-[1.4rem] border border-stone-900/10 bg-white/80 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.24em] text-amber-700">
+              SMS transport
+            </p>
+            <p className="mt-1 text-sm text-stone-600">
+              Simulated mode powers today&apos;s demo. Twilio mode is wired for v2 and will go live once credentials and a number are added.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link href={buildSessionUrl({ asset, source, channel, st: initialized.session.session_token, issue: issue || undefined, geo: geo || undefined, timing: timing || undefined, tier: tier || undefined, smsMode: "simulated" })} className={`rounded-full px-4 py-2 text-sm ${smsMode === "simulated" ? "bg-stone-950 text-white" : "border border-stone-900/10 bg-white text-stone-800"}`}>
+              Simulated SMS
+            </Link>
+            <Link href={buildSessionUrl({ asset, source, channel, st: initialized.session.session_token, issue: issue || undefined, geo: geo || undefined, timing: timing || undefined, tier: tier || undefined, smsMode: "twilio" })} className={`rounded-full px-4 py-2 text-sm ${smsMode === "twilio" ? "bg-stone-950 text-white" : "border border-stone-900/10 bg-white text-stone-800"}`}>
+              Twilio SMS
+            </Link>
+            <div className={`rounded-full px-4 py-2 text-sm ${twilioConfigured ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}>
+              {twilioConfigured ? "Twilio configured" : "Twilio not configured yet"}
+            </div>
+          </div>
+        </div>
+
+        {smsMode === "twilio" || smsNotice ? (
+          <div className="mt-4 rounded-[1.4rem] border border-stone-900/10 bg-white/80 p-4 text-sm text-stone-700">
+            <p className="font-semibold text-stone-900">
+              {smsMode === "twilio" ? "Twilio mode is selected." : "SMS transport notice"}
+            </p>
+            <p className="mt-2 leading-6">
+              {!twilioConfigured
+                ? "The code path for real Twilio SMS is present, but this deployment does not yet have Twilio credentials or a live phone number."
+                : "This deployment has Twilio credentials. Real inbound SMS should hit /api/twilio/inbound, and live outbound relay replies can be sent from sessions that began through Twilio."}
+            </p>
+            {smsNotice ? (
+              <p className="mt-2 text-xs text-stone-500">
+                Last SMS action status: {smsNotice.replaceAll("_", " ")}.
+              </p>
+            ) : null}
+          </div>
+        ) : null}
 
         {view === "simple" ? (
           <div className="mt-4 grid gap-4 xl:grid-cols-[260px_1fr] xl:gap-5">
@@ -296,6 +343,7 @@ export default async function Home({
                           <input type="hidden" name="geo" value={geo} />
                           <input type="hidden" name="timing" value={timing} />
                           <input type="hidden" name="tier" value={tier} />
+                          <input type="hidden" name="smsMode" value={smsMode} />
                           <input type="hidden" name="intentType" value={intentType} />
                           <button type="submit" className="w-full rounded-2xl border border-stone-900/10 bg-white px-4 py-3 text-left text-sm font-medium text-stone-800">{label}</button>
                         </form>
@@ -310,7 +358,7 @@ export default async function Home({
                       This shows the same session continuing into SMS without losing context.
                     </p>
                     <div className="mt-3 grid gap-2">
-                      <form action={submitSimulatedSms}>
+                      <form action={submitSmsMessage}>
                         <input type="hidden" name="sessionToken" value={initialized.session.session_token} />
                         <input type="hidden" name="asset" value={asset} />
                         <input type="hidden" name="source" value={source} />
@@ -319,11 +367,12 @@ export default async function Home({
                         <input type="hidden" name="geo" value={geo} />
                         <input type="hidden" name="timing" value={timing} />
                         <input type="hidden" name="tier" value={tier} />
+                        <input type="hidden" name="smsMode" value={smsMode} />
                         <input type="hidden" name="actor" value="citizen" />
                         <input type="hidden" name="messageText" value="I want to know if my donation is private." />
-                        <button type="submit" className="w-full rounded-2xl border border-stone-900/10 bg-white px-4 py-3 text-sm font-medium text-stone-800">Send supporter text</button>
+                        <button type="submit" className="w-full rounded-2xl border border-stone-900/10 bg-white px-4 py-3 text-sm font-medium text-stone-800">{smsMode === "twilio" ? "Expect real inbound text" : "Send supporter text"}</button>
                       </form>
-                      <form action={submitSimulatedSms}>
+                      <form action={submitSmsMessage}>
                         <input type="hidden" name="sessionToken" value={initialized.session.session_token} />
                         <input type="hidden" name="asset" value={asset} />
                         <input type="hidden" name="source" value={source} />
@@ -332,9 +381,10 @@ export default async function Home({
                         <input type="hidden" name="geo" value={geo} />
                         <input type="hidden" name="timing" value={timing} />
                         <input type="hidden" name="tier" value={tier} />
+                        <input type="hidden" name="smsMode" value={smsMode} />
                         <input type="hidden" name="actor" value="agent" />
                         <input type="hidden" name="messageText" value="Thanks for reaching out. We can keep messaging through your relay alias until you opt in." />
-                        <button type="submit" className="w-full rounded-2xl bg-stone-950 px-4 py-3 text-sm font-medium text-white">Send campaign reply</button>
+                        <button type="submit" className="w-full rounded-2xl bg-stone-950 px-4 py-3 text-sm font-medium text-white">{smsMode === "twilio" ? "Send live relay reply" : "Send campaign reply"}</button>
                       </form>
                     </div>
                   </div>
@@ -435,6 +485,7 @@ export default async function Home({
                         <input type="hidden" name="geo" value={geo} />
                         <input type="hidden" name="timing" value={timing} />
                         <input type="hidden" name="tier" value={tier} />
+                        <input type="hidden" name="smsMode" value={smsMode} />
                         <input type="hidden" name="intentType" value={intentType} />
                         <button type="submit" className="w-full rounded-2xl border border-stone-900/10 bg-stone-50 px-4 py-3 text-left text-sm font-medium text-stone-800">{label}</button>
                       </form>

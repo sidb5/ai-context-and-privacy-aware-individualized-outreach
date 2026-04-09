@@ -4,6 +4,11 @@ const PUBLIC_KEYS = [
 ] as const;
 
 const SERVER_KEYS = ["SUPABASE_SERVICE_ROLE_KEY"] as const;
+const TWILIO_KEYS = [
+  "TWILIO_ACCOUNT_SID",
+  "TWILIO_AUTH_TOKEN",
+  "TWILIO_PHONE_NUMBER",
+] as const;
 
 type KeyStatus = {
   key: string;
@@ -25,12 +30,20 @@ export function getServerEnvStatus() {
   return getKeyStatus(SERVER_KEYS);
 }
 
+export function getTwilioEnvStatus() {
+  return getKeyStatus(TWILIO_KEYS);
+}
+
 export function hasPublicSupabaseEnv() {
   return getPublicEnvStatus().every((item) => item.configured);
 }
 
 export function hasServiceRoleEnv() {
   return getServerEnvStatus().every((item) => item.configured);
+}
+
+export function hasTwilioEnv() {
+  return getTwilioEnvStatus().every((item) => item.configured);
 }
 
 export function getRequiredPublicSupabaseEnv() {
@@ -56,4 +69,22 @@ export function getRequiredServiceRoleKey() {
   }
 
   return serviceRoleKey;
+}
+
+export function getTwilioDefaultAssetSlug() {
+  return process.env.TWILIO_DEFAULT_ASSET_SLUG?.trim() || "maya-torres-2026";
+}
+
+export function getRequiredTwilioEnv() {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID?.trim();
+  const authToken = process.env.TWILIO_AUTH_TOKEN?.trim();
+  const phoneNumber = process.env.TWILIO_PHONE_NUMBER?.trim();
+
+  if (!accountSid || !authToken || !phoneNumber) {
+    throw new Error(
+      "Missing Twilio environment values. Set TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, and TWILIO_PHONE_NUMBER.",
+    );
+  }
+
+  return { accountSid, authToken, phoneNumber };
 }
