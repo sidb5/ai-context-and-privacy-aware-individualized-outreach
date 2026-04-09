@@ -13,6 +13,16 @@ It is not a generic campaign microsite. It is a demo implementation of a system 
 
 The current prototype is framed as a political fundraising and citizen-engagement product for candidates and PACs.
 
+## Prototype Screens
+
+### Main supporter flow
+
+![Main supporter flow](./Capture1.PNG)
+
+### Agent dashboard
+
+![Agent dashboard](./Capture2.PNG)
+
 ## Patent Source In This Workspace
 
 The prototype is based on the patent material located in the parent workspace:
